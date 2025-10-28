@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, HTTPException
 from pydantic import BaseModel
-from db.MongoDB import get_db
+from db.PostgreSQL import get_db as get_postgres_db
 from passlib.context import CryptContext
 import re
 
@@ -16,13 +16,6 @@ class User(BaseModel):
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register(user: User):
-    db = get_db()
-    users = db.users
-
-    # Verificar si el email ya existe
-    if users.find_one({"email": user.email}):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
-    
     # Validar formato de email
     email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
     if not re.match(email_regex, user.email):
@@ -34,8 +27,21 @@ def register(user: User):
 
     # Hashear password con Argon2
     hashed_password = pwd_context.hash(user.password)
-    user_dict = user.dict()
-    user_dict["password"] = hashed_password
-    users.insert_one(user_dict)
+    
+    # Insertar en PostgreSQL
+    conn = get_postgres_db()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO users (name, email, password) VALUES (%s, %s, %s)",
+            (user.name, user.email, hashed_password)
+        )
+        conn.commit()
+    except:
+        conn.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+    finally:
+        cur.close()
+        conn.close()
     
     return {"message": "User registered successfully"}

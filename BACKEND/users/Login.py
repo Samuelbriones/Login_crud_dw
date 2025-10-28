@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, HTTPException, Depends
 from pydantic import BaseModel
-from db.MongoDB import get_db
+from db.PostgreSQL import get_db
 from passlib.context import CryptContext
 from utils.Tocken import generate_token
 
@@ -14,14 +14,17 @@ class User(BaseModel):
 
 @router.post("/login", status_code=status.HTTP_200_OK)
 def login(user: User):
-    db = get_db()
-    users = db.users
-    db_user = users.find_one({"email": user.email})
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT id, name, email, password FROM users WHERE email = %s", (user.email,))
+    db_user = cur.fetchone()
+    cur.close()
+    conn.close()
     if not db_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid credentials")
 
-    if not pwd_context.verify(user.password, db_user["password"]):
+    if not pwd_context.verify(user.password, db_user[3]):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid credentials")
 
-    token = generate_token(str(db_user["_id"]), db_user["name"], db_user["email"])
+    token = generate_token(str(db_user[0]), db_user[1], db_user[2])
     return {"token": token}

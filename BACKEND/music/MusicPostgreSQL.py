@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException, Depends
 from pydantic import BaseModel
 from db.PostgreSQL import get_db
-from utils.Tocken import get_token
+from utils.Tocken import get_user_id
 
 router = APIRouter()
 
@@ -11,7 +11,7 @@ class Music(BaseModel):
     genre: str
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def create_music(music: Music, user_id: int = Depends(get_token)):
+def create_music(music: Music, user_id: int = Depends(get_user_id)):
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
@@ -24,7 +24,7 @@ def create_music(music: Music, user_id: int = Depends(get_token)):
     return {"message": "Music created successfully"}
 
 @router.get("/", status_code=status.HTTP_200_OK)
-def get_musics(user_id: int = Depends(get_token)):
+def get_musics(user_id: int = Depends(get_user_id)):
     conn = get_db()
     cur = conn.cursor()
     cur.execute("SELECT * FROM music WHERE user_id = %s", (user_id,))
@@ -37,7 +37,7 @@ def get_musics(user_id: int = Depends(get_token)):
     return music_list
 
 @router.put("/{music_id}", status_code=status.HTTP_200_OK)
-def update_music(music_id: int, music: Music, user_id: int = Depends(get_token)):
+def update_music(music_id: int, music: Music, user_id: int = Depends(get_user_id)):
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
@@ -52,7 +52,7 @@ def update_music(music_id: int, music: Music, user_id: int = Depends(get_token))
     return {"message": "Music updated successfully"}
 
 @router.delete("/{music_id}", status_code=status.HTTP_200_OK)
-def delete_music(music_id: int, user_id: int = Depends(get_token)):
+def delete_music(music_id: int, user_id: int = Depends(get_user_id)):
     conn = get_db()
     cur = conn.cursor()
     cur.execute("DELETE FROM music WHERE id = %s AND user_id = %s", (music_id, user_id))

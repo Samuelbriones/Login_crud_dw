@@ -3,13 +3,13 @@ from fastapi.security import OAuth2PasswordBearer
 from dotenv import load_dotenv
 import jwt
 import os
-from bson import ObjectId
-load_dotenv()
 from datetime import datetime, timedelta
+
+load_dotenv()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/users/login")
 
-def get_token(token: str = Depends(oauth2_scheme)) -> ObjectId:
+def get_user_id(token: str = Depends(oauth2_scheme)) -> int:
     try:
         payload: dict = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=[os.getenv("ALGORITHM")])
         user_id: str = payload.get("sub")
@@ -18,8 +18,7 @@ def get_token(token: str = Depends(oauth2_scheme)) -> ObjectId:
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token inválido",
             )
-        user_id = ObjectId(user_id)
-        return user_id
+        return int(user_id)
     except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -35,7 +34,6 @@ def get_token(token: str = Depends(oauth2_scheme)) -> ObjectId:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="No se pudieron validar las credenciales",
         ) from e
-
 
 def generate_token(id: str, name: str, email: str, expired_minutes: int = 60) -> str:
     expiration = datetime.now() + timedelta(minutes=expired_minutes)
@@ -56,14 +54,3 @@ def verify_token(token: str) -> dict:
         return None
     except jwt.InvalidTokenError:
         return None
-
-def register_token(name: str, email: str, password: str, expired_minutes: int = 60) -> str:
-    expiration = datetime.now() + timedelta(minutes=expired_minutes)
-    payload = {
-        "name": name,
-        "email": email,
-        "password": password,
-        "exp": expiration
-    }
-    token = jwt.encode(payload, os.getenv("SECRET_KEY"), algorithm=os.getenv("ALGORITHM"))
-    return token
