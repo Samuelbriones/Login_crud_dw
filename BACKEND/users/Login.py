@@ -6,6 +6,7 @@ from utils.Tocken import generate_token
 
 router = APIRouter()
 
+#login de usuario y generacion de token
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 class User(BaseModel):

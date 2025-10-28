@@ -5,6 +5,7 @@ import os
 load_dotenv()
 
 def get_db():
+    # configuracion de la conexion a postgresql
     conn = psycopg2.connect(
         host=os.getenv("POSTGRES_HOST"),
         database=os.getenv("POSTGRES_DB"),

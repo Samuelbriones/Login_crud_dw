@@ -7,6 +7,7 @@ import re
 router = APIRouter()
 
 # Cambiado a Argon2
+#registro de usuarios
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 class User(BaseModel):

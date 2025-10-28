@@ -6,6 +6,7 @@ from bson import ObjectId
 
 router = APIRouter()
 
+#router de FastAPI que define los endpoints para crud de musica
 class Music(BaseModel):
     title: str
     artist: str

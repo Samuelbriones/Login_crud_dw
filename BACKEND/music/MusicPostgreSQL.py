@@ -10,6 +10,8 @@ class Music(BaseModel):
     artist: str
     genre: str
 
+#router de FastAPI que define los endpoints para crud de musica
+
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def create_music(music: Music, user_id: int = Depends(get_user_id)):
     conn = get_db()

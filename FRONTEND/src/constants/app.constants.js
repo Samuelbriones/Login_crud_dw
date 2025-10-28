@@ -1,4 +1,4 @@
-// API Configuration
+// configuracion de la api
 export const API_BASE_URL = 'http://localhost:8000';
 
 export const API_ENDPOINTS = {
@@ -12,18 +12,18 @@ export const API_ENDPOINTS = {
   }
 };
 
-// Database Types
+// el tipo de base de datos
 export const DB_TYPES = {
   MONGODB: 'mongodb',
   POSTGRESQL: 'postgresql'
 };
 
-// Local Storage Keys
+// clave de almacenamiento 
 export const STORAGE_KEYS = {
   TOKEN: 'token'
 };
 
-// Form Initial States
+// estados iniciales de formularios
 export const INITIAL_MUSIC_FORM = {
   title: '',
   artist: '',
@@ -41,13 +41,13 @@ export const INITIAL_REGISTER_FORM = {
   password: ''
 };
 
-// Validation Rules
+// validaciones
 export const VALIDATION = {
   PASSWORD_MIN_LENGTH: 8,
   EMAIL_REGEX: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
 };
 
-// Messages
+// mensajes de exito y error
 export const MESSAGES = {
   SUCCESS: {
     REGISTER: 'Registro exitoso! Ahora puedes iniciar sesión',

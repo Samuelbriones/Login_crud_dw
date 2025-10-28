@@ -1,8 +1,8 @@
 /**
  * Obtiene el ID de una canción según el tipo de base de datos
- * @param {Object} music - Objeto de música
+ * @param {Object} music - Objeto de musica
  * @param {string} dbType - Tipo de base de datos ('mongodb' o 'postgresql')
- * @returns {string|number} ID de la canción
+ * @returns {string|number} ID de la cancion
  */
 export const getMusicId = (music, dbType) => {
   return dbType === 'mongodb' ? music._id : music.id;

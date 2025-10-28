@@ -5,7 +5,7 @@ import os
 load_dotenv()
 
 def get_db():
-    # Intenta usar MONGODB_URL primero (para Docker), luego construye desde variables individuales
+    # configuracion de la conexion a mongodb
     mongo_uri = os.getenv("MONGODB_URL")
     if not mongo_uri:
         mongo_user = os.getenv("MONGO_USER", "root")

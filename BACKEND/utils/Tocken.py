@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 
 load_dotenv()
 
+#token para la autenticacion y autorizacion de usuarios
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/users/login")
 
 def get_user_id(token: str = Depends(oauth2_scheme)) -> int:
