@@ -22,7 +22,7 @@ services:
       POSTGRES_PASSWORD: postgrespassword
       POSTGRES_DB: postgresdb
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql
 
   backend:
     build:
