@@ -43,8 +43,3 @@ Thumbs.db
 
 # Docker
 docker-compose.override.yml
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
