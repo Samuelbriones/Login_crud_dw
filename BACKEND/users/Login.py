@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, HTTPException, Depends
 from pydantic import BaseModel
 from db.PostgreSQL import get_db
 from passlib.context import CryptContext
-from utils.Tocken import generate_token
+from utils.Token import generate_token
 
 router = APIRouter()
 

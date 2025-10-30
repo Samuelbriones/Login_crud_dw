@@ -22,7 +22,9 @@ def create_tables():
             id SERIAL PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL UNIQUE,
-            password VARCHAR(255) NOT NULL
+            password VARCHAR(255),
+            provider VARCHAR(50) DEFAULT 'local',
+            google_id VARCHAR(255) UNIQUE
         );
 
         CREATE TABLE IF NOT EXISTS music (

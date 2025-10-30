@@ -1,171 +1,172 @@
-# Login & Music CRUD - Proyecto Full Stack
+# Login CRUD - Dual Database Music Manager
 
-Aplicación full stack con sistema de autenticación y gestión CRUD de música, soportando **MongoDB** y **PostgreSQL**.
+Sistema de gestión de música con autenticación de usuarios que soporta tanto MongoDB como PostgreSQL.
 
 ## 🚀 Características
 
-- ✅ Backend con **FastAPI** (Python)
-- ✅ Frontend con **React + Vite**
-- ✅ Autenticación con JWT
-- ✅ CRUD completo de música
-- ✅ Soporte para MongoDB y PostgreSQL
-- ✅ Docker Compose para bases de datos
-- ✅ Contraseñas hasheadas con Argon2
+- 🔐 **Autenticación completa**: Login tradicional + Google OAuth
+- 🗄️ **Dual Database**: Soporte para MongoDB y PostgreSQL
+- 🎵 **CRUD de música**: Crear, leer, actualizar y eliminar canciones
+- 🔒 **Seguridad**: Hashing con Argon2, JWT tokens
+- 🐳 **Dockerizado**: Fácil despliegue con Docker Compose
 
-## 📁 Estructura del Proyecto
+## 📋 Requisitos Previos
 
-```
-Login_crud_dw/
-├── BACKEND/
-│   ├── db/              # Conexiones a bases de datos
-│   ├── users/           # Endpoints de autenticación
-│   ├── music/           # Endpoints CRUD de música
-│   ├── utils/           # JWT y utilidades
-│   └── main.py          # Aplicación principal
-├── FRONTEND/
-│   ├── src/
-│   │   ├── components/  # Componentes React
-│   │   ├── pages/       # Páginas de la aplicación
-│   │   ├── services/    # Servicios API
-│   │   └── styles/      # Estilos CSS
-│   └── package.json
-└── docker-compose.yml   # Configuración de bases de datos
-```
+- Docker y Docker Compose
+- Node.js 16+ (para desarrollo frontend)
+- Python 3.9+ (para desarrollo backend)
 
-## 🛠️ Tecnologías
-
-### Backend
-- FastAPI
-- PostgreSQL (psycopg2)
-- MongoDB (pymongo)
-- JWT (PyJWT)
-- Argon2 (passlib)
-
-### Frontend
-- React 18
-- Vite
-- React Router DOM
-- Axios
-
-## 📦 Instalación
+## 🛠️ Instalación
 
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <tu-repositorio>
+git clone <repository-url>
 cd Login_crud_dw
 ```
 
-### 2. Configurar bases de datos con Docker
+### 2. Configurar variables de entorno
 
 ```bash
+cd BACKEND
+cp .env.example .env
+```
+
+Edita el archivo `.env` con tus credenciales:
+
+```env
+# JWT Configuration
+SECRET_KEY=tu-clave-secreta-super-segura
+ALGORITHM=HS256
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID=tu-google-client-id
+GOOGLE_CLIENT_SECRET=tu-google-client-secret
+```
+
+### 3. Iniciar con Docker
+
+```bash
+# Desde el directorio raíz
 docker-compose up -d
 ```
 
 Esto iniciará:
-- **PostgreSQL** en puerto 5432
-- **MongoDB** en puerto 27017
+- MongoDB en puerto 27017
+- PostgreSQL en puerto 5432
+- Backend API en puerto 8000
 
-### 3. Configurar Backend
-
-```bash
-cd BACKEND
-
-# Crear archivo .env
-echo "SECRET_KEY=tu_clave_secreta_aqui" > .env
-echo "ALGORITHM=HS256" >> .env
-
-# Instalar dependencias
-pip install -r requirements.txt
-
-# Ejecutar servidor
-uvicorn main:app --reload
-```
-
-El backend estará en: **http://localhost:8000**
-
-### 4. Configurar Frontend
+### 4. Iniciar Frontend
 
 ```bash
 cd FRONTEND
-
-# Instalar dependencias
 npm install
-
-# Ejecutar servidor de desarrollo
 npm run dev
 ```
 
-El frontend estará en: **http://localhost:5173**
+El frontend estará disponible en `http://localhost:5173`
 
-## 🔑 Variables de Entorno
-
-Crea un archivo `.env` en la carpeta `BACKEND/`:
-
-```env
-SECRET_KEY=tu_clave_secreta_super_segura
-ALGORITHM=HS256
-```
-
-## 🎯 Endpoints del Backend
+## 📚 API Endpoints
 
 ### Autenticación
+
 - `POST /api/users/register` - Registrar usuario
-- `POST /api/users/login` - Iniciar sesión (retorna JWT)
+- `POST /api/users/login` - Login tradicional
+- `POST /api/users/google-login` - Login con Google
 
 ### Música (MongoDB)
+
 - `GET /api/mongodb/music/` - Obtener todas las canciones
 - `POST /api/mongodb/music/` - Crear canción
 - `PUT /api/mongodb/music/{id}` - Actualizar canción
 - `DELETE /api/mongodb/music/{id}` - Eliminar canción
 
 ### Música (PostgreSQL)
+
 - `GET /api/postgresql/music/` - Obtener todas las canciones
 - `POST /api/postgresql/music/` - Crear canción
 - `PUT /api/postgresql/music/{id}` - Actualizar canción
 - `DELETE /api/postgresql/music/{id}` - Eliminar canción
 
-## 📝 Uso
+## 🏗️ Estructura del Proyecto
 
-1. **Registrar usuario**: Crear cuenta con nombre, email y contraseña (mínimo 8 caracteres)
-2. **Iniciar sesión**: Login con credenciales para obtener token JWT
-3. **Gestionar música**: 
-   - Seleccionar base de datos (MongoDB o PostgreSQL)
-   - Crear, editar, listar o eliminar canciones
-   - Cada usuario solo ve sus propias canciones
+```
+Login_crud_dw/
+├── BACKEND/
+│   ├── db/
+│   │   ├── MongoDB.py
+│   │   └── PostgreSQL.py
+│   ├── users/
+│   │   ├── Login.py
+│   │   ├── Register.py
+│   │   └── GoogleAuth.py
+│   ├── music/
+│   │   ├── MusicMongoDB.py
+│   │   └── MusicPostgreSQL.py
+│   ├── utils/
+│   │   └── Token.py
+│   ├── main.py
+│   ├── requirements.txt
+│   └── Dockerfile
+├── FRONTEND/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   └── App.jsx
+│   └── package.json
+└── docker-compose.yml
+```
 
-## 🔒 Seguridad
+## 🔐 Configuración de Google OAuth
 
-- Contraseñas hasheadas con **Argon2**
-- Autenticación basada en **JWT**
-- Protección de rutas en frontend
-- CORS configurado para desarrollo
-- Validación de datos con Pydantic
+1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
+2. Crea un nuevo proyecto o selecciona uno existente
+3. Habilita la API de Google+ 
+4. Crea credenciales OAuth 2.0
+5. Agrega los orígenes autorizados:
+   - `http://localhost:5173`
+   - `http://localhost:3000`
+6. Copia el Client ID y Client Secret al archivo `.env`
 
-## 📊 Base de Datos
+## 🧪 Desarrollo
 
-### PostgreSQL (Tablas)
-- `users`: id, name, email, password
-- `music`: id, title, artist, genre, user_id
+### Backend
 
-### MongoDB (Colecciones)
-- `musics`: _id, title, artist, genre, user_id
+```bash
+cd BACKEND
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
 
-## 🧪 Documentación API
+### Frontend
 
-Una vez el backend esté corriendo, accede a:
-- Swagger UI: **http://localhost:8000/docs**
-- ReDoc: **http://localhost:8000/redoc**
+```bash
+cd FRONTEND
+npm run dev
+```
 
-## 🎨 Capturas
+## 📝 Tecnologías Utilizadas
 
-El frontend incluye:
-- Página de registro con validación
-- Página de login
-- Dashboard con selector de base de datos
-- Tarjetas de música con acciones CRUD
-- Diseño responsive y moderno
+### Backend
+- FastAPI
+- PostgreSQL
+- MongoDB
+- Argon2 (Password Hashing)
+- PyJWT
+- Google Auth Library
+
+### Frontend
+- React
+- Vite
+- React Router DOM
+- Axios
+- Google OAuth
+
+## 🤝 Contribuir
+
+Las contribuciones son bienvenidas. Por favor, abre un issue primero para discutir los cambios que te gustaría realizar.
 
 ## 📄 Licencia
 
-Este proyecto es de código abierto.
+Este proyecto es de código abierto y está disponible bajo la licencia MIT.

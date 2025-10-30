@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException, Depends
 from pydantic import BaseModel
 from db.MongoDB import get_db
-from utils.Tocken import get_user_id
+from utils.Token import get_user_id
 from bson import ObjectId
 
 router = APIRouter()
@@ -34,18 +34,24 @@ def get_musics(user_id: int = Depends(get_user_id)):
 
 @router.put("/{music_id}", status_code=status.HTTP_200_OK)
 def update_music(music_id: str, music: Music, user_id: int = Depends(get_user_id)):
-    db = get_db()
-    musics = db.musics
-    result = musics.update_one({"_id": ObjectId(music_id), "user_id": user_id}, {"$set": music.dict()})
-    if result.modified_count == 0:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Music not found")
-    return {"message": "Music updated successfully"}
+    try:
+        db = get_db()
+        musics = db.musics
+        result = musics.update_one({"_id": ObjectId(music_id), "user_id": user_id}, {"$set": music.dict()})
+        if result.modified_count == 0:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Music not found")
+        return {"message": "Music updated successfully"}
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid music ID")
 
 @router.delete("/{music_id}", status_code=status.HTTP_200_OK)
 def delete_music(music_id: str, user_id: int = Depends(get_user_id)):
-    db = get_db()
-    musics = db.musics
-    result = musics.delete_one({"_id": ObjectId(music_id), "user_id": user_id})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Music not found")
-    return {"message": "Music deleted successfully"}
+    try:
+        db = get_db()
+        musics = db.musics
+        result = musics.delete_one({"_id": ObjectId(music_id), "user_id": user_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Music not found")
+        return {"message": "Music deleted successfully"}
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid music ID")

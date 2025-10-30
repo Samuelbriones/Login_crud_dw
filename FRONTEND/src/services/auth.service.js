@@ -23,6 +23,16 @@ export const authService = {
     return response.data;
   },
 
+  async googleLogin(googleToken) {
+    const response = await axios.post(`${API_URL}/google-login`, {
+      token: googleToken
+    });
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
+    }
+    return response.data;
+  },
+
   logout() {
     localStorage.removeItem('token');
   },

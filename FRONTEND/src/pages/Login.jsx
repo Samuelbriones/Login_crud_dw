@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { authService } from '../services/auth.service';
 import '../styles/Auth.css';
 
@@ -34,6 +35,24 @@ function Login() {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    setLoading(true);
+
+    try {
+      await authService.googleLogin(credentialResponse.credential);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Error al iniciar sesión con Google');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError('Error al iniciar sesión con Google');
+  };
+
   return (
     <div className="auth-container">
       <div className="auth-card">
@@ -64,6 +83,21 @@ function Login() {
             {loading ? 'Iniciando...' : 'Iniciar Sesión'}
           </button>
         </form>
+        
+        <div className="divider">
+          <span>O</span>
+        </div>
+        
+        <div className="google-login-wrapper">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            theme="outline"
+            size="large"
+            width="100%"
+          />
+        </div>
+        
         <p className="auth-link">
           ¿No tienes cuenta? <Link to="/register">Regístrate</Link>
         </p>

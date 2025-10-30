@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException, Depends
 from pydantic import BaseModel
 from db.PostgreSQL import get_db
-from utils.Tocken import get_user_id
+from utils.Token import get_user_id
 
 router = APIRouter()
 
@@ -46,10 +46,11 @@ def update_music(music_id: int, music: Music, user_id: int = Depends(get_user_id
         "UPDATE music SET title = %s, artist = %s, genre = %s WHERE id = %s AND user_id = %s",
         (music.title, music.artist, music.genre, music_id, user_id)
     )
+    rowcount = cur.rowcount
     conn.commit()
     cur.close()
     conn.close()
-    if cur.rowcount == 0:
+    if rowcount == 0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Music not found")
     return {"message": "Music updated successfully"}
 
@@ -58,9 +59,10 @@ def delete_music(music_id: int, user_id: int = Depends(get_user_id)):
     conn = get_db()
     cur = conn.cursor()
     cur.execute("DELETE FROM music WHERE id = %s AND user_id = %s", (music_id, user_id))
+    rowcount = cur.rowcount
     conn.commit()
     cur.close()
     conn.close()
-    if cur.rowcount == 0:
+    if rowcount == 0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Music not found")
     return {"message": "Music deleted successfully"}

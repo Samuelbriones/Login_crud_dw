@@ -20,11 +20,11 @@ def register(user: User):
     # Validar formato de email
     email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
     if not re.match(email_regex, user.email):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid email format")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="correo electronico invalido")
 
     # Validar longitud mínima de password
     if len(user.password) < 8:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password must be at least 8 characters long")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Contraseña debe tener al menos 8 caracteres")
 
     # Hashear password con Argon2
     hashed_password = pwd_context.hash(user.password)
@@ -38,9 +38,11 @@ def register(user: User):
             (user.name, user.email, hashed_password)
         )
         conn.commit()
-    except:
+    except Exception as e:
         conn.rollback()
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+        cur.close()
+        conn.close()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Correo electronico ya registrado")
     finally:
         cur.close()
         conn.close()
