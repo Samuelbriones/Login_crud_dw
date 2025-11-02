@@ -3,7 +3,6 @@ import strawberry
 from fastapi import Depends
 from .types import Music, MusicInput, User
 from db.PostgreSQL import get_db
-import psycopg2
 
 @strawberry.type
 class Query:
