@@ -10,6 +10,20 @@ function DatabaseSelector({ activeDb, onSelectDb }) {
         MongoDB
       </button>
       
+      <button 
+        className={activeDb === 'postgresql' ? 'active' : ''}
+        onClick={() => onSelectDb('postgresql')}
+      >
+        PostgreSQL
+      </button>
+
+      <button 
+        className={activeDb === 'graphql' ? 'active' : ''}
+        onClick={() => onSelectDb('graphql')}
+      >
+        Graphql
+      </button>
+      
     </div>
   );
 }
